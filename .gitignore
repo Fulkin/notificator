@@ -1,0 +1,7 @@
+test
+target
+*.iml
+*.class
+.idea
+*.xml
+lib
