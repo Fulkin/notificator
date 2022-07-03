@@ -8,9 +8,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "users")
+@XmlRootElement(name = "ExpiredUsers")
 public class Users {
-    @XmlElement(name = "item")
+    @XmlElement(name = "expiredUsers")
     List<User> userArray;
 
     public Users() {
