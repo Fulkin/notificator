@@ -23,11 +23,14 @@ import java.util.Properties;
 public class NotificationLectorService {
 
     private static DateFormat dateToSoap = new SimpleDateFormat("yyyy-dd-MM'T'hh:mm:ss");
-    private static String spaceUri;
+    private static String nameSpace = "soap";
+    private static String spaceTeamUri;
+    private static String spaceRouterUri;
     private static String teamSoapEndpointUrl;
     private static String routerSoapEndpointUrl;
     private static String getTeamSoapAction;
     private static String addRouterSoapAction;
+    User[] usertew = null;
 
     public NotificationLectorService() {
         try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("properties\\connection.properties")) {
@@ -35,9 +38,10 @@ public class NotificationLectorService {
             props.load(is);
             routerSoapEndpointUrl = props.getProperty("router.url");
             teamSoapEndpointUrl = props.getProperty("team.url");
-            spaceUri = props.getProperty("space.uri");
-            getTeamSoapAction = spaceUri + props.getProperty("team.soapaction");
-            addRouterSoapAction = spaceUri + props.getProperty("router.soapaction");
+            spaceTeamUri = props.getProperty("team.space.uri");
+            spaceRouterUri = props.getProperty("router.space.uri");
+            getTeamSoapAction = spaceTeamUri + props.getProperty("team.lector.soapaction");
+            addRouterSoapAction = spaceTeamUri + props.getProperty("router.soapaction");
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file");
         }
@@ -48,14 +52,13 @@ public class NotificationLectorService {
         try {
             SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
             SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-            SOAPMessage getSoapResponse = soapConnection.call(createGetSOAPRequest(getTeamSoapAction), teamSoapEndpointUrl);
-            User[] array = parserToUserArray(getSoapResponse);
-            SOAPMessage addSoapMessage = soapConnection.call(createAddSOAPRequest(addRouterSoapAction, array), routerSoapEndpointUrl);
-            User[] array1 = parserToUserArray(addSoapMessage);
+            SOAPMessage getSoapResponse = soapConnection.call(createSOAPRequest(getTeamSoapAction, null), teamSoapEndpointUrl);
+            userList = parserToUserArray(getSoapResponse);
+            SOAPMessage addSoapMessage = soapConnection.call(createSOAPRequest(addRouterSoapAction, userList), routerSoapEndpointUrl);
+            userList = parserToUserArray(addSoapMessage);
             System.out.println("Response SOAP Message:");
             addSoapMessage.writeTo(System.out);
             soapConnection.close();
-            userList = Arrays.asList(array1.clone());
         } catch (Exception e) {
             System.err.println("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
             e.printStackTrace();
@@ -63,46 +66,35 @@ public class NotificationLectorService {
         return userList;
     }
 
-    private static SOAPMessage createGetSOAPRequest(String soapAction) throws Exception {
+    private static SOAPMessage createSOAPRequest(String soapAction, List<User> array) throws Exception {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
 
-        createGetSoapEnvelope(soapMessage);
+        createSoapEnvelope(soapMessage, array);
 
         MimeHeaders headers = soapMessage.getMimeHeaders();
         headers.addHeader("SOAPAction", soapAction);
 
         soapMessage.saveChanges();
-
         return soapMessage;
     }
 
-    private static SOAPMessage createAddSOAPRequest(String soapAction, User[] array) throws Exception {
-        MessageFactory messageFactory = MessageFactory.newInstance();
-        SOAPMessage soapMessage = messageFactory.createMessage();
-
-        createAddSoapEnvelope(soapMessage, array);
-
-        MimeHeaders headers = soapMessage.getMimeHeaders();
-        headers.addHeader("SOAPAction", soapAction);
-
-        soapMessage.saveChanges();
-
-        return soapMessage;
-    }
-
-    private static void createAddSoapEnvelope(SOAPMessage soapMessage, User[] array) throws SOAPException {
+    private static void createSoapEnvelope(SOAPMessage soapMessage, List<User> array) throws SOAPException {
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
-        String myNamespace = "soap";
+
 
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration(myNamespace, spaceUri);
+        envelope.addNamespaceDeclaration(nameSpace, spaceRouterUri);
 
         // SOAP Body
         SOAPBody soapBody = envelope.getBody();
-        SOAPElement actionSoap = soapBody.addChildElement("addUncheckedMembers", myNamespace);
+        if (array == null) {
+            soapBody.addChildElement("getUncheckedMembers", nameSpace);
+            return;
+        }
+        SOAPElement actionSoap = soapBody.addChildElement("addUncheckedMembers", nameSpace);
         SOAPElement membersSoap = actionSoap.addChildElement("users");
 
 
@@ -120,20 +112,7 @@ public class NotificationLectorService {
         }
     }
 
-    private static void createGetSoapEnvelope(SOAPMessage soapMessage) throws SOAPException {
-        SOAPPart soapPart = soapMessage.getSOAPPart();
-        String myNamespace = "soap";
-
-        // SOAP Envelope
-        SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration(myNamespace, spaceUri);
-
-        // SOAP Body
-        SOAPBody soapBody = envelope.getBody();
-        soapBody.addChildElement("getUncheckedMembers", myNamespace);
-    }
-
-    private User[] parserToUserArray(SOAPMessage soapResponse) throws Exception {
+    private List<User> parserToUserArray(SOAPMessage soapResponse) throws Exception {
         DOMSource source = new DOMSource(soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0));
         StringWriter stringResult = new StringWriter();
         TransformerFactory.newInstance().newTransformer().transform(source, new StreamResult(stringResult));

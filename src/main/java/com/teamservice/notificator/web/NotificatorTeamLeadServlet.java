@@ -16,7 +16,7 @@ public class NotificatorTeamLeadServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        List<User> allMemberAndSetToRouter = notificationTeamLeadService.getAllMemberAndSetToRouter();
+        List<User> allMemberAndSetToRouter = notificationTeamLeadService.getAllUsersFromTeam();
         allMemberAndSetToRouter.forEach(System.out::println);
     }
 }

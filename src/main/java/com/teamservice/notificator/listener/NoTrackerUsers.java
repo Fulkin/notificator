@@ -10,7 +10,7 @@ import java.net.URL;
 public class NoTrackerUsers implements Runnable {
 
     private static final String USER_AGENT = "Mozilla/5.0";
-    private String GET_URL = "http://localhost:8090/notificator/notificator_lector";
+    private String GET_URL;
 
     public NoTrackerUsers(String GET_URL) {
         this.GET_URL = GET_URL;
