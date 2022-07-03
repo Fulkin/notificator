@@ -3,12 +3,15 @@ package com.teamservice.notificator.util;
 import com.teamservice.notificator.model.User;
 import com.teamservice.notificator.model.Users;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.soap.*;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -38,12 +41,20 @@ public class SoapUtil {
         SOAPMessage soapMessage = messageFactory.createMessage();
 
         createSoapEnvelope(soapMessage, uriSoapAction, array);
-
+        /*
         MimeHeaders headers = soapMessage.getMimeHeaders();
         headers.addHeader("SOAPAction", uriSoapAction);
+        */
 
         soapMessage.saveChanges();
         return soapMessage;
+    }
+
+    public static void createByteSOAPRequest(byte[] bytes) throws Exception {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage message = messageFactory.createMessage(new MimeHeaders(), new ByteArrayInputStream(bytes));
+        //createSoapEnvelope(message, "http://soap.router.aston.com/RouterWebServiceSoap/getUncheckedMembersResponse", null);
+        message.writeTo(System.out);
     }
 
     private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, List<User> array) throws Exception {
@@ -63,20 +74,13 @@ public class SoapUtil {
             return;
         }
         SOAPElement actionSoap = soapBody.addChildElement(method, nameSpaceSoap);
-        SOAPElement membersSoap = actionSoap.addChildElement("users");
+        Node firstChild = soapBody.getFirstChild();
 
+        JAXBContext context = JAXBContext.newInstance(Users.class);
+        Marshaller marshaller = context.createMarshaller();
+        Users users = new Users();
+        users.setUserArray(array);
+        marshaller.marshal(users, firstChild);
 
-        for (User user : array) {
-            SOAPElement itemSoap = membersSoap.addChildElement("item");
-            SOAPElement soapBodyElem1 = itemSoap.addChildElement("telegramId");
-            soapBodyElem1.addTextNode(String.valueOf(user.getTelegramId()));
-            SOAPElement soapBodyElem2 = itemSoap.addChildElement("firstName");
-            soapBodyElem2.addTextNode(user.getFirstName());
-            SOAPElement soapBodyElem3 = itemSoap.addChildElement("lastName");
-            soapBodyElem3.addTextNode(user.getLastName());
-            SOAPElement soapBodyElem4 = itemSoap.addChildElement("lastTrack");
-            String format = dateToSoap.format(user.getLastTrack());
-            soapBodyElem4.addTextNode(format);
-        }
     }
 }

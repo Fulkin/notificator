@@ -8,7 +8,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "userArray")
+@XmlRootElement(name = "users")
 public class Users {
     @XmlElement(name = "item")
     List<User> userArray;

@@ -35,7 +35,7 @@ public class BackgroundJobManager implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-
+        initProperties();
         scheduler = Executors.newSingleThreadScheduledExecutor();
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));
         ZonedDateTime nextRun = now.withHour(0).withMinute(1).withSecond(0);
