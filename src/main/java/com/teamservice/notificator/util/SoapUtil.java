@@ -11,6 +11,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.List;
 public class SoapUtil {
 
     private static DateFormat dateToSoap = new SimpleDateFormat("yyyy-dd-MM'T'hh:mm:ss");
-
 
     public static List<User> parserToUserArray(SOAPMessage soapResponse) throws Exception {
         DOMSource source = new DOMSource(soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0));
@@ -33,11 +33,11 @@ public class SoapUtil {
     }
 
 
-    public static SOAPMessage createSOAPRequest(String uriSoapAction, String space, String method, List<User> array) throws Exception {
+    public static SOAPMessage createSOAPRequest(String uriSoapAction, List<User> array) throws Exception {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
 
-        createSoapEnvelope(soapMessage, space, method, array);
+        createSoapEnvelope(soapMessage, uriSoapAction, array);
 
         MimeHeaders headers = soapMessage.getMimeHeaders();
         headers.addHeader("SOAPAction", uriSoapAction);
@@ -46,7 +46,11 @@ public class SoapUtil {
         return soapMessage;
     }
 
-    private static void createSoapEnvelope(SOAPMessage soapMessage, String space, String method, List<User> array) throws SOAPException {
+    private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, List<User> array) throws Exception {
+        URL url = new URL(urlString);
+        String space = url.getProtocol() + "://" + url.getHost() + "/";
+        String method = url.getPath().split("/")[2].replace("Response", "");
+
         String nameSpaceSoap = "soap";
         SOAPPart soapPart = soapMessage.getSOAPPart();
         // SOAP Envelope
