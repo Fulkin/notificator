@@ -1,23 +1,7 @@
 package com.teamservice.notificator.service;
 
-import com.teamservice.notificator.model.User;
-import com.teamservice.notificator.model.Users;
-import com.teamservice.notificator.util.SoapUtil;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.soap.*;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 

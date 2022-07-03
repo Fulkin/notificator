@@ -1,17 +1,26 @@
 package com.teamservice.notificator.util;
 
+import com.sun.xml.ws.api.model.soap.SOAPBinding;
 import com.teamservice.notificator.model.User;
 import com.teamservice.notificator.model.Users;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.soap.*;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMText;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -20,8 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class SoapUtil {
-
-    private static DateFormat dateToSoap = new SimpleDateFormat("yyyy-dd-MM'T'hh:mm:ss");
 
     public static List<User> parserToUserArray(SOAPMessage soapResponse) throws Exception {
         DOMSource source = new DOMSource(soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0));
@@ -41,20 +48,9 @@ public class SoapUtil {
         SOAPMessage soapMessage = messageFactory.createMessage();
 
         createSoapEnvelope(soapMessage, uriSoapAction, array);
-        /*
-        MimeHeaders headers = soapMessage.getMimeHeaders();
-        headers.addHeader("SOAPAction", uriSoapAction);
-        */
 
         soapMessage.saveChanges();
         return soapMessage;
-    }
-
-    public static void createByteSOAPRequest(byte[] bytes) throws Exception {
-        MessageFactory messageFactory = MessageFactory.newInstance();
-        SOAPMessage message = messageFactory.createMessage(new MimeHeaders(), new ByteArrayInputStream(bytes));
-        //createSoapEnvelope(message, "http://soap.router.aston.com/RouterWebServiceSoap/getUncheckedMembersResponse", null);
-        message.writeTo(System.out);
     }
 
     private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, List<User> array) throws Exception {

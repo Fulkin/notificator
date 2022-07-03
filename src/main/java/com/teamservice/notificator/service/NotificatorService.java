@@ -7,6 +7,7 @@ import jakarta.xml.soap.SOAPConnectionFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;

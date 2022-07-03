@@ -1,15 +1,7 @@
 package com.teamservice.notificator.service;
 
-import com.teamservice.notificator.model.User;
-import com.teamservice.notificator.util.SoapUtil;
-import jakarta.xml.soap.SOAPConnection;
-import jakarta.xml.soap.SOAPConnectionFactory;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 
 
