@@ -13,17 +13,14 @@ public class User {
     private String firstName;
     @XmlElement(name = "lastName")
     private String lastName;
-    @XmlElement(name = "lastTrack")
-    private Date lastTrack;
 
     public User() {
     }
 
-    public User(long telegramId, String firstName, String lastName, Date lastTrack) {
+    public User(long telegramId, String firstName, String lastName) {
         this.telegramId = telegramId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.lastTrack = lastTrack;
     }
 
     public long getTelegramId() {
@@ -50,21 +47,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Date getLastTrack() {
-        return lastTrack;
-    }
-
-    public void setLastTrack(Date lastTrack) {
-        this.lastTrack = lastTrack;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "telegramId=" + telegramId +
                 ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", lastTrack=" + lastTrack +
+                ", lastName='" + lastName +
                 '}';
     }
 }

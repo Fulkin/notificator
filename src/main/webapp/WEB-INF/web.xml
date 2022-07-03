@@ -14,7 +14,8 @@
     <servlet-mapping>
         <servlet-name>notificatorTeamLeadServlet</servlet-name>
         <url-pattern>/notificator_team_lead</url-pattern>
-    </servlet-mapping><servlet>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>notificatorLectorServlet</servlet-name>
         <servlet-class>com.teamservice.notificator.web.NotificatorLectorServlet</servlet-class>
         <load-on-startup>0</load-on-startup>

@@ -12,7 +12,6 @@ public class NotificationLectorService extends NotificatorService {
             Properties props = new Properties();
             props.load(is);
 
-            //todo add lector properties
             getTeamSoapAction = props.getProperty("team.action.lector.uri");
             addRouterSoapAction = props.getProperty("router.action.lector.uri");
         } catch (IOException e) {

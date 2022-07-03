@@ -1,31 +1,19 @@
 package com.teamservice.notificator.util;
 
-import com.sun.xml.ws.api.model.soap.SOAPBinding;
 import com.teamservice.notificator.model.User;
 import com.teamservice.notificator.model.Users;
-import jakarta.activation.DataHandler;
-import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.soap.*;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMText;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class SoapUtil {
@@ -69,7 +57,7 @@ public class SoapUtil {
             soapBody.addChildElement(method, nameSpaceSoap);
             return;
         }
-        SOAPElement actionSoap = soapBody.addChildElement(method, nameSpaceSoap);
+        soapBody.addChildElement(method, nameSpaceSoap);
         Node firstChild = soapBody.getFirstChild();
 
         JAXBContext context = JAXBContext.newInstance(Users.class);
