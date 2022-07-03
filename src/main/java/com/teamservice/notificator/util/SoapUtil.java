@@ -37,6 +37,8 @@ public class SoapUtil {
 
         createSoapEnvelope(soapMessage, uriSoapAction, array);
 
+        soapMessage.writeTo(System.out);
+        System.out.println();
         soapMessage.saveChanges();
         return soapMessage;
     }
@@ -46,7 +48,7 @@ public class SoapUtil {
         String space = url.getProtocol() + "://" + url.getHost() + "/";
         String method = url.getPath().split("/")[2].replace("Response", "");
 
-        String nameSpaceSoap = "soap";
+        String nameSpaceSoap = "end";
         SOAPPart soapPart = soapMessage.getSOAPPart();
         // SOAP Envelope
         SOAPEnvelope envelope = soapPart.getEnvelope();
