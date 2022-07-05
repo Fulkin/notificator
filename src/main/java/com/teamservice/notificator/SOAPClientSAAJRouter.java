@@ -29,10 +29,12 @@ public class SOAPClientSAAJRouter {
 
         NotificatorService notificationLectorService = new NotificationLectorService();
         List<User> lector = notificationLectorService.getAllUsersFromTeam();
-        notificationLectorService.setUsersToRouter(lector);
+        lector.forEach(System.out::println);
+        //notificationLectorService.setUsersToRouter(lector);
 
         NotificatorService notTeamLead = new NotificationTeamLeadService();
         List<User> teamLead = notTeamLead.getAllUsersFromTeam();
+        teamLead.forEach(System.out::println);
         notificationLectorService.setUsersToRouter(teamLead);
     }
 }

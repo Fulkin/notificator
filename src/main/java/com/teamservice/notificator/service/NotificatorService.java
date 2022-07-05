@@ -1,18 +1,15 @@
 package com.teamservice.notificator.service;
 
 import com.teamservice.notificator.model.User;
+import com.teamservice.notificator.util.PropertiesUtil;
 import com.teamservice.notificator.util.SoapUtil;
 import jakarta.xml.soap.SOAPConnection;
 import jakarta.xml.soap.SOAPConnectionFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Properties;
 
 public class NotificatorService {
     protected static SOAPConnectionFactory soapConnectionFactory;
@@ -24,13 +21,11 @@ public class NotificatorService {
     protected static String addRouterSoapAction;
 
     protected NotificatorService() {
-        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("properties\\connection.properties")) {
+        routerSoapEndpointUrl = PropertiesUtil.getProperty("router.url");
+        teamSoapEndpointUrl = PropertiesUtil.getProperty("team.url");
+        try  {
             soapConnectionFactory = SOAPConnectionFactory.newInstance();
-            Properties props = new Properties();
-            props.load(is);
-            routerSoapEndpointUrl = props.getProperty("router.url");
-            teamSoapEndpointUrl = props.getProperty("team.url");
-        } catch (IOException | SOAPException e) {
+        } catch (SOAPException e) {
             throw new IllegalStateException("Invalid config file");
         }
     }
