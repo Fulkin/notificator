@@ -1,14 +1,10 @@
 package com.teamservice.notificator;
 
-import com.teamservice.notificator.model.User;
+import com.teamservice.notificator.model.UserDAO;
 import com.teamservice.notificator.service.NotificationLectorService;
 import com.teamservice.notificator.service.NotificationTeamLeadService;
 import com.teamservice.notificator.service.NotificatorService;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SOAPClientSAAJRouter {
@@ -28,12 +24,12 @@ public class SOAPClientSAAJRouter {
 
 
         NotificatorService notificationLectorService = new NotificationLectorService();
-        List<User> lector = notificationLectorService.getAllUsersFromTeam();
+        List<UserDAO> lector = notificationLectorService.getAllUsersFromTeam();
         lector.forEach(System.out::println);
         //notificationLectorService.setUsersToRouter(lector);
 
         NotificatorService notTeamLead = new NotificationTeamLeadService();
-        List<User> teamLead = notTeamLead.getAllUsersFromTeam();
+        List<UserDAO> teamLead = notTeamLead.getAllUsersFromTeam();
         teamLead.forEach(System.out::println);
         notificationLectorService.setUsersToRouter(teamLead);
     }

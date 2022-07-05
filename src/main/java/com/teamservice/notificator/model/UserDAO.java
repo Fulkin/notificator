@@ -5,7 +5,7 @@ import jakarta.xml.bind.annotation.*;
 import java.util.Date;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class User {
+public class UserDAO {
 
     @XmlElement(name = "telegramId")
     private long telegramId;
@@ -14,10 +14,10 @@ public class User {
     @XmlElement(name = "lastName")
     private String lastName;
 
-    public User() {
+    public UserDAO() {
     }
 
-    public User(long telegramId, String firstName, String lastName) {
+    public UserDAO(long telegramId, String firstName, String lastName) {
         this.telegramId = telegramId;
         this.firstName = firstName;
         this.lastName = lastName;

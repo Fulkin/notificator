@@ -9,23 +9,23 @@ import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "ExpiredUsersArr")
-public class Users {
+public class ExpiredUsersDAO {
 
     @XmlElement(name = "ownerId")
     long owner;
     @XmlElement(name = "expiredUsers")
-    List<User> userArray;
+    List<UserDAO> userDAOArray;
 
 
-    public Users() {
+    public ExpiredUsersDAO() {
     }
 
-    public List<User> getUserArray() {
-        return userArray;
+    public List<UserDAO> getUserArray() {
+        return userDAOArray;
     }
 
-    public void setUserArray(List<User> userArray) {
-        this.userArray = userArray;
+    public void setUserArray(List<UserDAO> userDAOArray) {
+        this.userDAOArray = userDAOArray;
     }
 
     public long getOwner() {
@@ -40,8 +40,8 @@ public class Users {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Users: ");
-        for (User user : userArray) {
-            sb.append(user).append(" ");
+        for (UserDAO userDAO : userDAOArray) {
+            sb.append(userDAO).append(" ");
         }
         sb.append("\n").append(owner).append("\n");
         return sb.toString();

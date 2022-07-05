@@ -1,6 +1,6 @@
 package com.teamservice.notificator.service;
 
-import com.teamservice.notificator.model.User;
+import com.teamservice.notificator.model.UserDAO;
 import com.teamservice.notificator.util.PropertiesUtil;
 import com.teamservice.notificator.util.SoapUtil;
 import jakarta.xml.soap.SOAPConnection;
@@ -43,8 +43,8 @@ public class NotificatorService {
         }
     }
 
-    public List<User> getAllUsersFromTeam() {
-        List<User> userList = null;
+    public List<UserDAO> getAllUsersFromTeam() {
+        List<UserDAO> userDAOList = null;
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
 
             SOAPMessage getSoapResponse = soapConnection.call(
@@ -52,21 +52,21 @@ public class NotificatorService {
                     teamSoapEndpointUrl);
             getSoapResponse.writeTo(System.out);
             System.out.println();
-            userList = SoapUtil.parserToUserArray(getSoapResponse);
+            userDAOList = SoapUtil.parserToUserArray(getSoapResponse);
         } catch (Exception e) {
             System.err.println("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
             e.printStackTrace();
         }
-        return userList;
+        return userDAOList;
     }
 
-    public void setUsersToRouter(List<User> array) {
+    public void setUsersToRouter(List<UserDAO> array) {
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
 
             SOAPMessage addSoapMessage = soapConnection.call(
                     SoapUtil.createSOAPRequest(addRouterSoapAction, array),
                     routerSoapEndpointUrl);
-            List<User> array1 = SoapUtil.parserToUserArray(addSoapMessage);
+            List<UserDAO> array1 = SoapUtil.parserToUserArray(addSoapMessage);
             System.out.println("Response SOAP Message:");
             addSoapMessage.writeTo(System.out);
             System.out.println();
