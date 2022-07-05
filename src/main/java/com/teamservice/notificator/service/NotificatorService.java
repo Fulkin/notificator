@@ -7,8 +7,10 @@ import jakarta.xml.soap.SOAPConnectionFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
@@ -30,6 +32,19 @@ public class NotificatorService {
             teamSoapEndpointUrl = props.getProperty("team.url");
         } catch (IOException | SOAPException e) {
             throw new IllegalStateException("Invalid config file");
+        }
+    }
+
+    public void setFile(Path path) {
+        try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
+            SOAPMessage call = soapConnection.call(
+                    SoapUtil.createByteSOAPRequest(path),
+                    "http://localhost:8080/router/soap/files");
+            System.out.println("\n\n");
+            call.writeTo(System.out);
+            System.out.println("\n\n");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
