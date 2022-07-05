@@ -51,6 +51,7 @@ public class NotificatorService {
                     SoapUtil.createSOAPRequest(getTeamSoapAction, null),
                     teamSoapEndpointUrl);
             getSoapResponse.writeTo(System.out);
+            System.out.println();
             userList = SoapUtil.parserToUserArray(getSoapResponse);
         } catch (Exception e) {
             System.err.println("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
@@ -68,6 +69,7 @@ public class NotificatorService {
             List<User> array1 = SoapUtil.parserToUserArray(addSoapMessage);
             System.out.println("Response SOAP Message:");
             addSoapMessage.writeTo(System.out);
+            System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
         }

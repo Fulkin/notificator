@@ -27,6 +27,7 @@ public class SoapUtil {
         TransformerFactory.newInstance().newTransformer().transform(source, new StreamResult(stringResult));
         String message = stringResult.toString();
         System.out.println(message);
+        System.out.println();
         JAXBContext context = JAXBContext.newInstance(Users.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Users users = (Users) unmarshaller.unmarshal(new StringReader(message));
