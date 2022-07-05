@@ -31,7 +31,7 @@ public class SoapUtil {
         System.out.println();
         JAXBContext context = JAXBContext.newInstance(ExpiredUsersArrayDAO.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        ExpiredUsersDAO expiredUsersDAO = (ExpiredUsersDAO) unmarshaller.unmarshal(new StringReader(message));
+        ExpiredUsersArrayDAO expiredUsersDAO = (ExpiredUsersArrayDAO) unmarshaller.unmarshal(new StringReader(message));
         return expiredUsersDAO.getUserArray();
     }
 

@@ -10,4 +10,19 @@ import java.util.List;
 public class ExpiredUsersArrayDAO {
     @XmlElement(name = "expiredUsersArr")
     List<ExpiredUsersDAO> userDAOArray;
+
+    public List<ExpiredUsersDAO> getUserDAOArray() {
+        return userDAOArray;
+    }
+
+    public void setUserDAOArray(List<ExpiredUsersDAO> userDAOArray) {
+        this.userDAOArray = userDAOArray;
+    }
+
+    @Override
+    public String toString() {
+        return "ExpiredUsersArrayDAO{" +
+                "userDAOArray=" + userDAOArray +
+                '}';
+    }
 }
