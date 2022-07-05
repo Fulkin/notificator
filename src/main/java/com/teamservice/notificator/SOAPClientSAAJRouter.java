@@ -1,5 +1,6 @@
 package com.teamservice.notificator;
 
+import com.teamservice.notificator.model.ExpiredUsersDAO;
 import com.teamservice.notificator.model.UserDAO;
 import com.teamservice.notificator.service.NotificationLectorService;
 import com.teamservice.notificator.service.NotificationTeamLeadService;
@@ -24,12 +25,12 @@ public class SOAPClientSAAJRouter {
 
 
         NotificatorService notificationLectorService = new NotificationLectorService();
-        List<UserDAO> lector = notificationLectorService.getAllUsersFromTeam();
+        List<ExpiredUsersDAO> lector = notificationLectorService.getAllUsersFromTeam();
         lector.forEach(System.out::println);
         //notificationLectorService.setUsersToRouter(lector);
 
         NotificatorService notTeamLead = new NotificationTeamLeadService();
-        List<UserDAO> teamLead = notTeamLead.getAllUsersFromTeam();
+        List<ExpiredUsersDAO> teamLead = notTeamLead.getAllUsersFromTeam();
         teamLead.forEach(System.out::println);
         notificationLectorService.setUsersToRouter(teamLead);
     }

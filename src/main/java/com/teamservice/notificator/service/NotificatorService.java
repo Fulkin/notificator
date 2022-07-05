@@ -1,5 +1,6 @@
 package com.teamservice.notificator.service;
 
+import com.teamservice.notificator.model.ExpiredUsersDAO;
 import com.teamservice.notificator.model.UserDAO;
 import com.teamservice.notificator.util.PropertiesUtil;
 import com.teamservice.notificator.util.SoapUtil;
@@ -43,8 +44,8 @@ public class NotificatorService {
         }
     }
 
-    public List<UserDAO> getAllUsersFromTeam() {
-        List<UserDAO> userDAOList = null;
+    public List<ExpiredUsersDAO> getAllUsersFromTeam() {
+        List<ExpiredUsersDAO> userDAOList = null;
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
 
             SOAPMessage getSoapResponse = soapConnection.call(
@@ -60,13 +61,13 @@ public class NotificatorService {
         return userDAOList;
     }
 
-    public void setUsersToRouter(List<UserDAO> array) {
+    public void setUsersToRouter(List<ExpiredUsersDAO> array) {
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
 
             SOAPMessage addSoapMessage = soapConnection.call(
                     SoapUtil.createSOAPRequest(addRouterSoapAction, array),
                     routerSoapEndpointUrl);
-            List<UserDAO> array1 = SoapUtil.parserToUserArray(addSoapMessage);
+            List<ExpiredUsersDAO> array1 = SoapUtil.parserToUserArray(addSoapMessage);
             System.out.println("Response SOAP Message:");
             addSoapMessage.writeTo(System.out);
             System.out.println();

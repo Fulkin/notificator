@@ -8,7 +8,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ExpiredUsersArr")
 public class ExpiredUsersDAO {
 
     @XmlElement(name = "ownerId")

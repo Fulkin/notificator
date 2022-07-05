@@ -1,5 +1,6 @@
 package com.teamservice.notificator.web;
 
+import com.teamservice.notificator.model.ExpiredUsersDAO;
 import com.teamservice.notificator.model.UserDAO;
 import com.teamservice.notificator.service.NotificationTeamLeadService;
 import jakarta.servlet.ServletException;
@@ -16,7 +17,7 @@ public class NotificatorTeamLeadServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        List<UserDAO> allMemberAndSetToRouter = notificationTeamLeadService.getAllUsersFromTeam();
+        List<ExpiredUsersDAO> allMemberAndSetToRouter = notificationTeamLeadService.getAllUsersFromTeam();
         notificationTeamLeadService.setUsersToRouter(allMemberAndSetToRouter);
         allMemberAndSetToRouter.forEach(System.out::println);
     }

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SoapUtil {
 
-    public static List<UserDAO> parserToUserArray(SOAPMessage soapResponse) throws Exception {
+    public static List<ExpiredUsersDAO> parserToUserArray(SOAPMessage soapResponse) throws Exception {
         DOMSource source = new DOMSource(soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0));
         StringWriter stringResult = new StringWriter();
         TransformerFactory.newInstance().newTransformer().transform(source, new StreamResult(stringResult));
@@ -32,11 +32,11 @@ public class SoapUtil {
         JAXBContext context = JAXBContext.newInstance(ExpiredUsersArrayDAO.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         ExpiredUsersArrayDAO expiredUsersDAO = (ExpiredUsersArrayDAO) unmarshaller.unmarshal(new StringReader(message));
-        return expiredUsersDAO.getUserArray();
+        return expiredUsersDAO.getUserDAOArray();
     }
 
 
-    public static SOAPMessage createSOAPRequest(String uriSoapAction, List<UserDAO> array) throws Exception {
+    public static SOAPMessage createSOAPRequest(String uriSoapAction, List<ExpiredUsersDAO> array) throws Exception {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
 
@@ -46,6 +46,32 @@ public class SoapUtil {
         System.out.println();
         soapMessage.saveChanges();
         return soapMessage;
+    }
+
+    private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, List<ExpiredUsersDAO> array) throws Exception {
+        URL url = new URL(urlString);
+        String space = url.getProtocol() + "://" + url.getHost() + "/";
+        String method = url.getPath().split("/")[2];
+
+        String nameSpaceSoap = "end";
+        SOAPPart soapPart = soapMessage.getSOAPPart();
+        // SOAP Envelope
+        SOAPEnvelope envelope = soapPart.getEnvelope();
+        envelope.addNamespaceDeclaration(nameSpaceSoap, space);
+        // SOAP Body
+        SOAPBody soapBody = envelope.getBody();
+        if (array == null) {
+            soapBody.addChildElement(method, nameSpaceSoap);
+            return;
+        }
+        soapBody.addChildElement(method, nameSpaceSoap);
+        Node firstChild = soapBody.getFirstChild();
+
+        JAXBContext context = JAXBContext.newInstance(ExpiredUsersArrayDAO.class);
+        Marshaller marshaller = context.createMarshaller();
+        ExpiredUsersArrayDAO expiredUsersDAO = new ExpiredUsersArrayDAO();
+        expiredUsersDAO.setUserDAOArray(array);
+        marshaller.marshal(expiredUsersDAO, firstChild);
     }
 
     public static SOAPMessage createByteSOAPRequest(Path path) throws Exception {
@@ -81,31 +107,5 @@ public class SoapUtil {
         message.saveChanges();
         message.writeTo(System.out);
         return message;
-    }
-
-    private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, List<UserDAO> array) throws Exception {
-        URL url = new URL(urlString);
-        String space = url.getProtocol() + "://" + url.getHost() + "/";
-        String method = url.getPath().split("/")[2];
-
-        String nameSpaceSoap = "end";
-        SOAPPart soapPart = soapMessage.getSOAPPart();
-        // SOAP Envelope
-        SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration(nameSpaceSoap, space);
-        // SOAP Body
-        SOAPBody soapBody = envelope.getBody();
-        if (array == null) {
-            soapBody.addChildElement(method, nameSpaceSoap);
-            return;
-        }
-        soapBody.addChildElement(method, nameSpaceSoap);
-        Node firstChild = soapBody.getFirstChild();
-
-        JAXBContext context = JAXBContext.newInstance(ExpiredUsersDAO.class);
-        Marshaller marshaller = context.createMarshaller();
-        ExpiredUsersDAO expiredUsersDAO = new ExpiredUsersDAO();
-        expiredUsersDAO.setUserArray(array);
-        marshaller.marshal(expiredUsersDAO, firstChild);
     }
 }
