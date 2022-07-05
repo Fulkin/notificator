@@ -1,4 +1,4 @@
-package com.teamservice.notificator.listener;
+package com.notificator.listener;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -4,11 +4,11 @@
 		 http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <display-name>Notificator</display-name>
+    <display-name>notificator</display-name>
 
     <servlet>
         <servlet-name>notificatorTeamLeadServlet</servlet-name>
-        <servlet-class>com.teamservice.notificator.web.NotificatorTeamLeadServlet</servlet-class>
+        <servlet-class>com.notificator.web.NotificatorTeamLeadServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -17,7 +17,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>notificatorLectorServlet</servlet-name>
-        <servlet-class>com.teamservice.notificator.web.NotificatorLectorServlet</servlet-class>
+        <servlet-class>com.notificator.web.NotificatorLectorServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -27,7 +27,7 @@
 
     <listener>
         <listener-class>
-            com.teamservice.notificator.listener.BackgroundJobManager
+            com.notificator.listener.BackgroundJobManager
         </listener-class>
     </listener>
 </web-app>

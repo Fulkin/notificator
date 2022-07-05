@@ -1,4 +1,5 @@
-package com.teamservice.notificator.model;
+package com.notificator.model;
+
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -8,42 +9,42 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ExpiredUsersArr")
+@XmlRootElement(name = "expiredUsersWithOwner")
 public class ExpiredUsersDAO {
 
     @XmlElement(name = "ownerId")
-    long owner;
+    long ownerId;
     @XmlElement(name = "expiredUsers")
-    List<UserDAO> userDAOArray;
+    List<UserDAO> expiredUsers;
 
 
     public ExpiredUsersDAO() {
     }
 
-    public List<UserDAO> getUserArray() {
-        return userDAOArray;
+    public List<UserDAO> getExpiredUsers() {
+        return expiredUsers;
     }
 
-    public void setUserArray(List<UserDAO> userDAOArray) {
-        this.userDAOArray = userDAOArray;
+    public void setExpiredUsers(List<UserDAO> expiredUsers) {
+        this.expiredUsers = expiredUsers;
     }
 
-    public long getOwner() {
-        return owner;
+    public long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(long owner) {
-        this.owner = owner;
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Users: ");
-        for (UserDAO userDAO : userDAOArray) {
+        for (UserDAO userDAO : expiredUsers) {
             sb.append(userDAO).append(" ");
         }
-        sb.append("\n").append(owner).append("\n");
+        sb.append("\nownerID: ").append(ownerId).append("\n");
         return sb.toString();
     }
 }
