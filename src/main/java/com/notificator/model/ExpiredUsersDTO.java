@@ -1,6 +1,5 @@
 package com.notificator.model;
 
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -8,24 +7,34 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.util.List;
 
+/**
+ * DTO for group users with their teamleader.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "expiredUsersWithOwner")
-public class ExpiredUsersDAO {
+public class ExpiredUsersDTO {
 
+    /**
+     * Leader telegram id
+     */
     @XmlElement(name = "ownerId")
     long ownerId;
+
+    /**
+     * list of users, who didn't mark the completion of the track
+     */
     @XmlElement(name = "expiredUsers")
-    List<UserDAO> expiredUsers;
+    List<UserDTO> expiredUsers;
 
 
-    public ExpiredUsersDAO() {
+    public ExpiredUsersDTO() {
     }
 
-    public List<UserDAO> getExpiredUsers() {
+    public List<UserDTO> getExpiredUsers() {
         return expiredUsers;
     }
 
-    public void setExpiredUsers(List<UserDAO> expiredUsers) {
+    public void setExpiredUsers(List<UserDTO> expiredUsers) {
         this.expiredUsers = expiredUsers;
     }
 
@@ -41,8 +50,8 @@ public class ExpiredUsersDAO {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Users: ");
-        for (UserDAO userDAO : expiredUsers) {
-            sb.append(userDAO).append(" ");
+        for (UserDTO userDTO : expiredUsers) {
+            sb.append(userDTO).append(" ");
         }
         sb.append("\nownerID: ").append(ownerId).append("\n");
         return sb.toString();

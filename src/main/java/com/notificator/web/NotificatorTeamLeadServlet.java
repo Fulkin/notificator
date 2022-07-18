@@ -1,27 +1,30 @@
 package com.notificator.web;
 
-import com.notificator.model.ExpiredUsersArray;
+import com.notificator.model.ExpiredUsersArrayDTO;
 import com.notificator.service.NotificatorService;
 import com.notificator.util.PropertiesUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Servlet to receive request from the team service for getting expired users and
+ * send that users to the router service for teamlead
+ */
 public class NotificatorTeamLeadServlet extends HttpServlet {
 
-    private NotificatorService notificatorService = new NotificatorService();
+    private final NotificatorService notificatorService = new NotificatorService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        ExpiredUsersArray expUsers = notificatorService.getAllUsersFromTeam(
+        ExpiredUsersArrayDTO expUsers = notificatorService.getAllUsersFromTeam(
                 PropertiesUtil.getProperty("team.action.teamlead.uri")
         );
         if (expUsers == null) {
             return;
         }
         notificatorService.setUsersToRouter(
-                expUsers,
-                PropertiesUtil.getProperty("router.action.teamlead.uri")
+                expUsers, PropertiesUtil.getProperty("router.action.teamlead.uri")
         );
     }
 }

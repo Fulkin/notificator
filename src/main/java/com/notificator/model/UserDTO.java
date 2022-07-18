@@ -5,9 +5,12 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * User DTO, who didn't mark the completion of the track
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "expiredUsers")
-public class UserDAO {
+public class UserDTO {
 
     @XmlElement(name = "telegramId")
     private long telegramId;
@@ -15,13 +18,16 @@ public class UserDAO {
     private String firstName;
     @XmlElement(name = "lastName")
     private String lastName;
+    /**
+     * Date of the last mark of the track
+     */
     @XmlElement(name = "lastModified")
     private String lastModified;
 
-    public UserDAO() {
+    public UserDTO() {
     }
 
-    public UserDAO(long telegramId, String firstName, String lastName, String lastModified) {
+    public UserDTO(long telegramId, String firstName, String lastName, String lastModified) {
         this.telegramId = telegramId;
         this.firstName = firstName;
         this.lastName = lastName;

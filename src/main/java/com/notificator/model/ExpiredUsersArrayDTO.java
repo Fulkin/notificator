@@ -7,21 +7,24 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import java.util.List;
 
+/**
+ * DTO for multiple {@code ExpiredUsers} entities. 
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "ExpiredUsersArr")
-public class ExpiredUsersArray {
+public class ExpiredUsersArrayDTO {
 
     @XmlSchemaType(name = "expiredUsersWithOwner")
-    private List<ExpiredUsersDAO> expiredUsersWithOwner;
+    private List<ExpiredUsersDTO> expiredUsersWithOwner;
 
-    public ExpiredUsersArray() {
+    public ExpiredUsersArrayDTO() {
     }
 
-    public List<ExpiredUsersDAO> getExpiredUsersWithOwner() {
+    public List<ExpiredUsersDTO> getExpiredUsersWithOwner() {
         return expiredUsersWithOwner;
     }
 
-    public void setExpiredUsersWithOwner(List<ExpiredUsersDAO> expiredUsersWithOwner) {
+    public void setExpiredUsersWithOwner(List<ExpiredUsersDTO> expiredUsersWithOwner) {
         this.expiredUsersWithOwner = expiredUsersWithOwner;
     }
 
@@ -29,7 +32,7 @@ public class ExpiredUsersArray {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Users: ");
-        for (ExpiredUsersDAO userDAO : expiredUsersWithOwner) {
+        for (ExpiredUsersDTO userDAO : expiredUsersWithOwner) {
             sb.append(userDAO).append(" ");
         }
         return sb.toString();

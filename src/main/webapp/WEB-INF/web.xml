@@ -27,7 +27,7 @@
 
     <listener>
         <listener-class>
-            com.notificator.listener.BackgroundJobManager
+            com.notificator.listener.BackgroundJobListener
         </listener-class>
     </listener>
 </web-app>

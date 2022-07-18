@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Utility class for getting properties
+ */
 public class PropertiesUtil {
     private static final Properties properties;
 
@@ -16,10 +19,9 @@ public class PropertiesUtil {
             properties = new Properties();
             properties.load(input);
         } catch (IOException e) {
-            throw new IllegalStateException("Something went wrong", e);
+            throw new IllegalStateException("The file does not exist", e);
         }
     }
-
 
     public static String getProperty(String name) {
         return properties.getProperty(name);

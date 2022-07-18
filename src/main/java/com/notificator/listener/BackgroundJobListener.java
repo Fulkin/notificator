@@ -12,21 +12,32 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@WebListener
-public class BackgroundJobManager implements ServletContextListener {
+/**
+ * A listener that, when the service starts, activates two threads via the
+ * {@code Executors.newSingleThreadScheduledExecutor()} method that pings the
+ * {@code NotificatorLectorServlet} and {@code NotificatorTeamLeadServlet} servlets.
+ */
 
-    private ScheduledExecutorService scheduler;
-    private String notificatorUrl;
+@WebListener
+public class BackgroundJobListener implements ServletContextListener {
+
     /**
-     * https://stackoverflow.com/questions/20387881/how-to-run-certain-task-every-day-at-a-particular-time-using-scheduledexecutorse
+     * ExecutorService for scheduled threads
+     */
+    private ScheduledExecutorService scheduler;
+
+    /**
+     * Override method for start scheduled threads
+     *
+     * @param event - not used
      */
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        notificatorUrl = PropertiesUtil.getProperty("notificator.url");
+        String notificatorUrl = PropertiesUtil.getProperty("notificator.url");
         scheduler = Executors.newSingleThreadScheduledExecutor();
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));
         ZonedDateTime nextRun = now.withHour(22).withMinute(0).withSecond(0);
-        if(now.compareTo(nextRun) > 0) {
+        if (now.compareTo(nextRun) > 0) {
             nextRun = nextRun.plusDays(1);
         }
 
@@ -44,6 +55,11 @@ public class BackgroundJobManager implements ServletContextListener {
                 TimeUnit.SECONDS);
     }
 
+    /**
+     * Override method for stop ExecutorService
+     *
+     * @param event - not used
+     */
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         scheduler.shutdownNow();

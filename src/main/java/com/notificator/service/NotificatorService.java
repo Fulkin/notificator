@@ -1,7 +1,7 @@
 package com.notificator.service;
 
-import com.notificator.model.ExpiredUsersArray;
-import com.notificator.model.ExpiredUsersDAO;
+import com.notificator.model.ExpiredUsersArrayDTO;
+import com.notificator.model.ExpiredUsersDTO;
 import com.notificator.util.PropertiesUtil;
 import com.notificator.util.SoapUtil;
 import jakarta.xml.soap.SOAPConnection;
@@ -9,65 +9,65 @@ import jakarta.xml.soap.SOAPConnectionFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 
-import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Service layer to get expired users from SOAP message and creating SOAP message
+ * for further sending
+ */
 public class NotificatorService {
-    protected static SOAPConnectionFactory soapConnectionFactory;
+    private static SOAPConnectionFactory soapConnectionFactory;
+    private static String teamSoapEndpointUrl;
+    private static String routerSoapEndpointUrl;
 
-    protected static String teamSoapEndpointUrl;
-    protected static String routerSoapEndpointUrl;
-
+    /**
+     * Set uri for SOAP messages and creating SOAPConnectionFactory
+     */
     public NotificatorService() {
         routerSoapEndpointUrl = PropertiesUtil.getProperty("router.url");
         teamSoapEndpointUrl = PropertiesUtil.getProperty("team.url");
-        try  {
+        try {
             soapConnectionFactory = SOAPConnectionFactory.newInstance();
         } catch (SOAPException e) {
             throw new IllegalStateException("Invalid config file");
         }
     }
 
-    public ExpiredUsersArray getAllUsersFromTeam(String teamUrl) {
-        ExpiredUsersArray expiredUsersArray = null;
+    /**
+     * Get expired users from SOAP message from a given uri
+     *
+     * @param teamUrl - given url for getting users
+     * @return - group of users with their teamleader (or lector) to whom the response is sent
+     */
+    public ExpiredUsersArrayDTO getAllUsersFromTeam(String teamUrl) {
+        ExpiredUsersArrayDTO expiredUsersArrayDTO = null;
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
-
             SOAPMessage getSoapResponse = soapConnection.call(
                     SoapUtil.createSOAPRequest(teamUrl, null),
                     teamSoapEndpointUrl);
-            expiredUsersArray = SoapUtil.parserToUserArray(getSoapResponse);
+            expiredUsersArrayDTO = SoapUtil.parserToUserArray(getSoapResponse);
         } catch (Exception e) {
-            System.err.println("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL and SOAPAction!\n");
-            e.printStackTrace();
+            throw new RuntimeException("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL!\n");
         }
-        return expiredUsersArray;
+        return expiredUsersArrayDTO;
     }
 
-    public void setUsersToRouter(ExpiredUsersArray expiredUsers, String routerUrl) {
+    /**
+     * Sending users for a given url
+     *
+     * @param expiredUsers - group of users with their teamleader (or lector) to whom the response is sent
+     * @param routerUrl    - given url for sending users
+     */
+    public void setUsersToRouter(ExpiredUsersArrayDTO expiredUsers, String routerUrl) {
         try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
-
-            List<ExpiredUsersDAO> listUsers = expiredUsers.getExpiredUsersWithOwner();
-            for (ExpiredUsersDAO listUser : listUsers) {
+            List<ExpiredUsersDTO> listUsers = expiredUsers.getExpiredUsersWithOwner();
+            for (ExpiredUsersDTO listUser : listUsers) {
                 soapConnection.call(
                         SoapUtil.createSOAPRequest(routerUrl, listUser),
                         routerSoapEndpointUrl);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Deprecated
-    public void setFile(Path path) {
-        try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
-            SOAPMessage call = soapConnection.call(
-                    SoapUtil.createByteSOAPRequest(path),
-                    "http://localhost:8080/router/soap/files");
-            System.out.println("\n\n");
-            call.writeTo(System.out);
-            System.out.println("\n\n");
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL!\n");
         }
     }
 }

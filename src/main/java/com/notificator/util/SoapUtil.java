@@ -1,9 +1,7 @@
 package com.notificator.util;
 
-import com.notificator.model.ExpiredUsersArray;
-import com.notificator.model.ExpiredUsersDAO;
-import jakarta.activation.DataHandler;
-import jakarta.activation.FileDataSource;
+import com.notificator.model.ExpiredUsersArrayDTO;
+import com.notificator.model.ExpiredUsersDTO;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
@@ -16,90 +14,73 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.nio.file.Path;
 
+/**
+ * Utility class for creation and parsing SOAP messages
+ */
 public class SoapUtil {
 
-    public static ExpiredUsersArray parserToUserArray(SOAPMessage soapResponse) throws Exception {
-        Node item = soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0);
+    private SoapUtil() {
+    }
 
+    /**
+     * Get array expired users from SOAP messages
+     * @param soapResponse - SOAP message containing expired users
+     * @return - array expired users
+     * @throws Exception - error parsing SOAP message
+     */
+    public static ExpiredUsersArrayDTO parserToUserArray(SOAPMessage soapResponse) throws Exception {
+        Node item = soapResponse.getSOAPBody().getChildNodes().item(0).getChildNodes().item(0);
         DOMSource source = new DOMSource(item);
         StringWriter stringResult = new StringWriter();
         TransformerFactory.newInstance().newTransformer().transform(source, new StreamResult(stringResult));
         String message = stringResult.toString();
-        JAXBContext context = JAXBContext.newInstance(ExpiredUsersArray.class);
+        JAXBContext context = JAXBContext.newInstance(ExpiredUsersArrayDTO.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        ExpiredUsersArray expiredUsersDAO = (ExpiredUsersArray) unmarshaller.unmarshal(new StringReader(message));
-        return expiredUsersDAO;
+        return (ExpiredUsersArrayDTO) unmarshaller.unmarshal(new StringReader(message));
     }
 
-    public static SOAPMessage createSOAPRequest(String uriSoapAction, ExpiredUsersDAO expiredUsers) throws Exception {
+    /**
+     * Create SOAP message for sending as request
+     * @param uriSoapAction - uri to which the response is sent
+     * @param expiredUsers - group of users with their teamleader (or lector) to whom the response is sent
+     * @return - response as SOAP message
+     * @throws Exception - error creating SOAP message
+     */
+    public static SOAPMessage createSOAPRequest(String uriSoapAction, ExpiredUsersDTO expiredUsers) throws Exception {
         MessageFactory messageFactory = MessageFactory.newInstance();
         SOAPMessage soapMessage = messageFactory.createMessage();
-
         createSoapEnvelope(soapMessage, uriSoapAction, expiredUsers);
         soapMessage.saveChanges();
         return soapMessage;
     }
 
-    private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, ExpiredUsersDAO expiredUsers) throws Exception {
+    /**
+     * private method for creating body SOAP message
+     * @param soapMessage - SOAP message that is sent as a request
+     * @param urlString - uri to which the response is sent
+     * @param expiredUsers - group of users with their teamleader (or lector) to whom the response is sent
+     * @throws Exception - error creating SOAP message
+     */
+    private static void createSoapEnvelope(SOAPMessage soapMessage, String urlString, ExpiredUsersDTO expiredUsers) throws Exception {
         URL url = new URL(urlString);
         String space = url.getProtocol() + "://" + url.getHost() + "/";
         String method = url.getPath().split("/")[2];
 
         String nameSpaceSoap = "end";
         SOAPPart soapPart = soapMessage.getSOAPPart();
-        // SOAP Envelope
+
         SOAPEnvelope envelope = soapPart.getEnvelope();
         envelope.addNamespaceDeclaration(nameSpaceSoap, space);
-        // SOAP Body
-        SOAPBody soapBody = envelope.getBody();
 
+        SOAPBody soapBody = envelope.getBody();
         soapBody.addChildElement(method, nameSpaceSoap);
         if (expiredUsers == null) {
             return;
         }
         Node firstChild = soapBody.getFirstChild();
-
-        JAXBContext context = JAXBContext.newInstance(ExpiredUsersArray.class);
+        JAXBContext context = JAXBContext.newInstance(ExpiredUsersArrayDTO.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.marshal(expiredUsers, firstChild);
-    }
-
-    @Deprecated
-    public static SOAPMessage createByteSOAPRequest(Path path) throws Exception {
-
-        MessageFactory messageFactory = MessageFactory.newInstance();
-        SOAPMessage message = messageFactory.createMessage();
-        MimeHeaders mimeHeaders = message.getMimeHeaders();
-
-
-        URL url = new URL("http://soap.router.aston.com/FileManager/uploadFile");
-        String space = url.getProtocol() + "://" + url.getHost() + "/";
-        String method = url.getPath().split("/")[2];
-
-
-
-        String nameSpaceSoap = "soap";
-        SOAPPart soapPart = message.getSOAPPart();
-        // SOAP Envelope
-        SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration(nameSpaceSoap, space);
-        // SOAP Body
-        SOAPBody soapBody = envelope.getBody();
-
-        SOAPElement soapElement = soapBody.addChildElement(method, nameSpaceSoap);
-        String contextId = "1";
-
-        DataHandler dataHandler = new DataHandler(new FileDataSource(path.toFile()));
-        AttachmentPart attachment = message.createAttachmentPart(dataHandler);
-
-        attachment.setContentId(contextId);
-        message.addAttachmentPart(attachment);
-
-        SOAPElement file1 = soapElement.addChildElement("file");
-        file1.addTextNode("cid:" + contextId);
-        message.saveChanges();
-        return message;
     }
 }
