@@ -4,6 +4,7 @@ import com.notificator.util.PropertiesUtil;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import org.slf4j.Logger;
 
 import java.time.Duration;
 import java.time.ZoneId;
@@ -11,6 +12,8 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A listener that, when the service starts, activates two threads via the
@@ -21,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 @WebListener
 public class BackgroundJobListener implements ServletContextListener {
 
+    private static final Logger log = getLogger(BackgroundJobListener.class);
     /**
      * ExecutorService for scheduled threads
      */
@@ -33,6 +37,7 @@ public class BackgroundJobListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent event) {
+        log.info("start initialize threads listener");
         String notificatorUrl = PropertiesUtil.getProperty("notificator.url");
         scheduler = Executors.newSingleThreadScheduledExecutor();
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));

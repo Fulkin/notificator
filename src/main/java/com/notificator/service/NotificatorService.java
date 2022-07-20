@@ -8,14 +8,18 @@ import jakarta.xml.soap.SOAPConnection;
 import jakarta.xml.soap.SOAPConnectionFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
+import org.slf4j.Logger;
 
 import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Service layer to get expired users from SOAP message and creating SOAP message
  * for further sending
  */
 public class NotificatorService {
+    private static final Logger log = getLogger(NotificatorService.class);
     private static SOAPConnectionFactory soapConnectionFactory;
     private static String teamSoapEndpointUrl;
     private static String routerSoapEndpointUrl;
@@ -47,7 +51,8 @@ public class NotificatorService {
                     teamSoapEndpointUrl);
             expiredUsersArrayDTO = SoapUtil.parserToUserArray(getSoapResponse);
         } catch (Exception e) {
-            throw new RuntimeException("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL!\n");
+            log.error("REQUEST SOAP Error!");
+            return null;
         }
         return expiredUsersArrayDTO;
     }
@@ -67,7 +72,7 @@ public class NotificatorService {
                         routerSoapEndpointUrl);
             }
         } catch (Exception e) {
-            throw new RuntimeException("\nError occurred while sending SOAP Request to Server!\nMake sure you have the correct endpoint URL!\n");
+            log.error("RESPONSE SOAP Error!");
         }
     }
 }

@@ -6,6 +6,9 @@ import com.notificator.util.PropertiesUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Servlet to receive request from the team service for getting expired users and
@@ -13,16 +16,20 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class NotificatorTeamLeadServlet extends HttpServlet {
 
+    private static final Logger log = getLogger(NotificatorTeamLeadServlet.class);
     private final NotificatorService notificatorService = new NotificatorService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        log.info("start doGet method, get response from team service");
         ExpiredUsersArrayDTO expUsers = notificatorService.getAllUsersFromTeam(
                 PropertiesUtil.getProperty("team.action.teamlead.uri")
         );
         if (expUsers == null) {
+            log.info("expired users is null");
             return;
         }
+        log.info("send request to router service");
         notificatorService.setUsersToRouter(
                 expUsers, PropertiesUtil.getProperty("router.action.teamlead.uri")
         );

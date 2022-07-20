@@ -25,9 +25,4 @@
         <url-pattern>/notificator_lector</url-pattern>
     </servlet-mapping>
 
-    <listener>
-        <listener-class>
-            com.notificator.listener.BackgroundJobListener
-        </listener-class>
-    </listener>
 </web-app>

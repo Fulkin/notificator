@@ -15,7 +15,7 @@ public class PropertiesUtil {
     }
 
     static {
-        try (InputStream input = new FileInputStream("/opt/tomcat/webapps/notificator/WEB-INF/classes/properties/connection.properties")) {
+        try (InputStream input = new FileInputStream("/usr/local/tomcat/webapps/notificator/WEB-INF/classes/properties/connection.properties")) {
             properties = new Properties();
             properties.load(input);
         } catch (IOException e) {
