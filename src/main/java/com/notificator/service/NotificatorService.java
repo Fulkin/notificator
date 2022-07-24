@@ -51,7 +51,7 @@ public class NotificatorService {
                     teamSoapEndpointUrl);
             expiredUsersArrayDTO = SoapUtil.parserToUserArray(getSoapResponse);
         } catch (Exception e) {
-            log.error("REQUEST SOAP Error!");
+            log.error("REQUEST SOAP Error!", e);
             return null;
         }
         return expiredUsersArrayDTO;
@@ -72,7 +72,7 @@ public class NotificatorService {
                         routerSoapEndpointUrl);
             }
         } catch (Exception e) {
-            log.error("RESPONSE SOAP Error!");
+            log.error("RESPONSE SOAP Error!", e);
         }
     }
 }
