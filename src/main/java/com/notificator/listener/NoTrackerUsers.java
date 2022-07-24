@@ -43,7 +43,7 @@ public class NoTrackerUsers implements Runnable {
             con.setRequestProperty("User-Agent", USER_AGENT);
             log.info("get SOAP message with response status: {}", con.getResponseCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error in thread", e);
         }
     }
 }
