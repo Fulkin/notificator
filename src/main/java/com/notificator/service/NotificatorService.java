@@ -2,13 +2,14 @@ package com.notificator.service;
 
 import com.notificator.model.ExpiredUsersArrayDTO;
 import com.notificator.model.ExpiredUsersDTO;
-import com.notificator.util.PropertiesUtil;
 import com.notificator.util.SoapUtil;
-import jakarta.xml.soap.SOAPConnection;
-import jakarta.xml.soap.SOAPConnectionFactory;
-import jakarta.xml.soap.SOAPException;
-import jakarta.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPConnection;
+import javax.xml.soap.SOAPConnectionFactory;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,22 +19,23 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Service layer to get expired users from SOAP message and creating SOAP message
  * for further sending
  */
+@Service
 public class NotificatorService {
     private static final Logger log = getLogger(NotificatorService.class);
     private static SOAPConnectionFactory soapConnectionFactory;
-    private static String teamSoapEndpointUrl;
-    private static String routerSoapEndpointUrl;
+    @Value("${router.url}")
+    private String teamSoapEndpointUrl;
+    @Value("${team.url}")
+    private String routerSoapEndpointUrl;
 
     /**
      * Set uri for SOAP messages and creating SOAPConnectionFactory
      */
     public NotificatorService() {
-        routerSoapEndpointUrl = PropertiesUtil.getProperty("router.url");
-        teamSoapEndpointUrl = PropertiesUtil.getProperty("team.url");
         try {
             soapConnectionFactory = SOAPConnectionFactory.newInstance();
         } catch (SOAPException e) {
-            throw new IllegalStateException("Invalid config file");
+            log.error("SOAP create factory error", e);
         }
     }
 
@@ -45,7 +47,8 @@ public class NotificatorService {
      */
     public ExpiredUsersArrayDTO getAllUsersFromTeam(String teamUrl) {
         ExpiredUsersArrayDTO expiredUsersArrayDTO = null;
-        try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
+        try  {
+            SOAPConnection soapConnection = soapConnectionFactory.createConnection();
             SOAPMessage getSoapResponse = soapConnection.call(
                     SoapUtil.createSOAPRequest(teamUrl, null),
                     teamSoapEndpointUrl);
@@ -63,8 +66,9 @@ public class NotificatorService {
      * @param expiredUsers - group of users with their teamleader (or lector) to whom the response is sent
      * @param routerUrl    - given url for sending users
      */
-    public void setUsersToRouter(ExpiredUsersArrayDTO expiredUsers, String routerUrl) {
-        try (SOAPConnection soapConnection = soapConnectionFactory.createConnection()) {
+    public void sendUsersToRouter(ExpiredUsersArrayDTO expiredUsers, String routerUrl) {
+        try {
+            SOAPConnection soapConnection = soapConnectionFactory.createConnection();
             List<ExpiredUsersDTO> listUsers = expiredUsers.getExpiredUsersWithOwner();
             for (ExpiredUsersDTO listUser : listUsers) {
                 soapConnection.call(

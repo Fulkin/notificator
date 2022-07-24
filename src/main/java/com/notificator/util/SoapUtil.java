@@ -2,10 +2,10 @@ package com.notificator.util;
 
 import com.notificator.model.ExpiredUsersArrayDTO;
 import com.notificator.model.ExpiredUsersDTO;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.soap.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.soap.*;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerFactory;

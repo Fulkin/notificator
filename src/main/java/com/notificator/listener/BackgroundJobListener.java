@@ -1,10 +1,13 @@
 package com.notificator.listener;
 
-import com.notificator.util.PropertiesUtil;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import java.time.Duration;
 import java.time.ZoneId;
@@ -21,7 +24,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * {@code NotificatorLectorServlet} and {@code NotificatorTeamLeadServlet} servlets.
  */
 
-@WebListener
+@Component
 public class BackgroundJobListener implements ServletContextListener {
 
     private static final Logger log = getLogger(BackgroundJobListener.class);
@@ -30,6 +33,11 @@ public class BackgroundJobListener implements ServletContextListener {
      */
     private ScheduledExecutorService scheduler;
 
+    @Value("${notificator.url}")
+    private String notificatorUri;
+
+
+    DispatcherServlet dispatcherServlet;
     /**
      * Override method for start scheduled threads
      *
@@ -38,25 +46,25 @@ public class BackgroundJobListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         log.info("start initialize threads listener");
-        String notificatorUrl = PropertiesUtil.getProperty("notificator.url");
         scheduler = Executors.newSingleThreadScheduledExecutor();
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));
-        ZonedDateTime nextRun = now.withHour(22).withMinute(0).withSecond(0);
+        ZonedDateTime nextRun = now.withHour(0).withMinute(1).withSecond(0);
         if (now.compareTo(nextRun) > 0) {
-            nextRun = nextRun.plusDays(1);
+            //nextRun = nextRun.plusDays(1);
+            nextRun = nextRun.plusMinutes(1);
         }
 
         Duration duration = Duration.between(now, nextRun);
         long initialDelay = duration.getSeconds();
 
-        scheduler.scheduleAtFixedRate(new NoTrackerUsers(notificatorUrl + "/notificator_team_lead"),
+        scheduler.scheduleAtFixedRate(new NoTrackerUsers(notificatorUri + "/notificator_team_lead"),
                 initialDelay,
-                TimeUnit.DAYS.toSeconds(1),
+                TimeUnit.MINUTES.toSeconds(1),
                 TimeUnit.SECONDS);
 
-        scheduler.scheduleAtFixedRate(new NoTrackerUsers(notificatorUrl + "/notificator_lector"),
+        scheduler.scheduleAtFixedRate(new NoTrackerUsers(notificatorUri + "/notificator_lector"),
                 initialDelay,
-                TimeUnit.DAYS.toSeconds(1),
+                TimeUnit.MINUTES.toSeconds(1),
                 TimeUnit.SECONDS);
     }
 
