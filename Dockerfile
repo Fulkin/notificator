@@ -7,12 +7,10 @@ COPY pom.xml /home/app
 
 RUN mvn -f /home/app/pom.xml clean package
 
-#Run tomcat
+FROM amazoncorretto:11-alpine3.13-jdk
 
-FROM tomcat:jdk11-corretto
-
-COPY --from=MAVEN_BUILD /home/app/target/notificator.war /usr/local/tomcat/webapps
+COPY --from=MAVEN_BUILD /home/app/target/notificator-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-CMD ["catalina.sh", "run"]
+ENTRYPOINT ["java","-jar","/app.jar"]

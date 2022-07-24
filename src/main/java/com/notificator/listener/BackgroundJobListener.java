@@ -1,14 +1,11 @@
 package com.notificator.listener;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,8 +33,6 @@ public class BackgroundJobListener implements ServletContextListener {
     @Value("${notificator.url}")
     private String notificatorUri;
 
-
-    DispatcherServlet dispatcherServlet;
     /**
      * Override method for start scheduled threads
      *
