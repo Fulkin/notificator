@@ -5,6 +5,7 @@
 
 ## About
 
+* Spring boot with scheduler
 * When the service starts, two threads are created that access the request to receive expired users and then send them.
 * SOAP request to get expired users for the last three days for a lecturer and for one day for a team lead in `Team service`
 * SOAP request to send expired users to the `Router service`.
